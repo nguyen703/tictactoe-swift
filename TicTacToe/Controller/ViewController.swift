@@ -8,11 +8,6 @@
 import UIKit
 
 class ViewController: UIViewController {
-
-    enum Turn {
-        case Nought
-        case Cross
-    }
     
     @IBOutlet weak var turnLabel: UILabel!
     @IBOutlet weak var a1: UIButton!
@@ -25,100 +20,74 @@ class ViewController: UIViewController {
     @IBOutlet weak var c2: UIButton!
     @IBOutlet weak var c3: UIButton!
     
-    //declare turn and nought/cross symbol
-    var firstTurn = Turn.Cross
-    var currentTurn = Turn.Cross
-    
-    var NOUGHT = "O"
-    var CROSS = "X"
-    var board = [UIButton]()
-    
-    var noughtScore = 0
-    var crossScore = 0
+    var board = Board()
+    var player1 = Player(symbol: "O", turn: true)
+    var player2 = Player(symbol: "X", turn: false)
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        initBoard()
-    }
-    
-    func initBoard() {
-        board.append(a1)
-        board.append(a2)
-        board.append(a3)
-        board.append(b1)
-        board.append(b2)
-        board.append(b3)
-        board.append(c1)
-        board.append(c2)
-        board.append(c3)
+        
+        // this line avoid error "Attempt to present ... which is already presenting
+        definesPresentationContext = true
+        
+        // init first turn when Opening app
+        board.firstTurn = player1.turn
+        board.currentTurn = player1.turn
+        let boardCells = [a1, a2, a3, b1, b2, b3, c1, c2, c3]
+        
+        // parse all the buttons to the board array
+        board.createBoard(boardCells)
     }
 
     @IBAction func boardTapAction(_ sender: UIButton) {
         addToBoard(sender)
         
-        if checkForVictory(CROSS) {
-            crossScore += 1
-            resultAlert(title: "Crosses Win!")
+        if checkForVictory(player1.symbol) {
+            player1.score += 1
+            resultAlert(title: "\(player1.symbol) Win!")
+            turnLabel.text = player2.symbol
         }
         
-        if checkForVictory(NOUGHT) {
-            noughtScore += 1
-            resultAlert(title: "Noughts Win!")
+        if checkForVictory(player2.symbol) {
+            player2.score += 1
+            resultAlert(title: "\(player2.symbol) Win!")
+            turnLabel.text = player1.symbol
         }
         
-        if isFullBoard() {
+        if board.isFullBoard() {
             resultAlert(title: "Draw!")
         }
     }
     
+//MARK: - Functions area
+    
+    // Add symbol on the board
+    // triggered when tapping
     func addToBoard(_ sender: UIButton) {
         if (sender.title(for: .normal) == nil) {
-            if (currentTurn == Turn.Nought) {
-                sender.setTitle(NOUGHT, for: .normal)
-                currentTurn = Turn.Cross
-                turnLabel.text = CROSS
-            } else if (currentTurn == Turn.Cross) {
-                sender.setTitle(CROSS, for: .normal)
-                currentTurn = Turn.Nought
-                turnLabel.text = NOUGHT
+            if (board.currentTurn == player1.turn) {
+                sender.setTitle(player1.symbol, for: .normal)
+                board.currentTurn = !player1.turn
+                turnLabel.text = player2.symbol
+            } else if (board.currentTurn == player2.turn) {
+                sender.setTitle(player2.symbol, for: .normal)
+                board.currentTurn = !player2.turn
+                turnLabel.text = player1.symbol
             }
         }
     }
     
-    func isFullBoard() -> Bool {
-        for button in board {
-            if (button.title(for: .normal) == nil) {
-                return false
-            }
-        }
-        return true
-    }
-    
+    // show alert when game finished
     func resultAlert(title: String) {
-        let message = "\nNoughts \(String(noughtScore))\n\nCrosses \(String(crossScore))"
+        let message = "\n\(player1.symbol) score:  \(String(player1.score))\n\n\(player2.symbol) score:  \(String(player2.score))"
         let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         ac.addAction(UIAlertAction(title: "Reset", style: .default, handler: { (_) in
-            self.resetBoard()
+            self.board.resetBoard()
         }))
         self.present(ac, animated: true)
     }
     
-    func resetBoard() {
-        for button in board {
-            button.setTitle(nil, for: .normal)
-        }
-        
-        if (firstTurn == Turn.Nought) {
-            firstTurn = Turn.Cross
-            turnLabel.text = CROSS
-        } else if (firstTurn == Turn.Cross) {
-            firstTurn = Turn.Nought
-            turnLabel.text = NOUGHT
-        }
-        
-        currentTurn = firstTurn
-    }
-    
+    // check possible winning cases
     func checkForVictory(_ s: String) -> Bool {
         
         // Horizontal Win
@@ -155,6 +124,7 @@ class ViewController: UIViewController {
         return false
     }
     
+    // compare button title with play's symbol
     func thisSymbol(_ button: UIButton, _ symbol: String) -> Bool {
         return button.title(for: .normal) == symbol
     }
