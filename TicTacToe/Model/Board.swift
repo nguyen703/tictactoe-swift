@@ -37,4 +37,18 @@ struct Board {
         currentTurn = firstTurn
     }
     
+    // Add symbol on the board
+    // triggered when tapping
+    mutating func addToBoard(_ sender: UIButton,_ player1: Player,_ player2: Player) -> String {
+        if (currentTurn == player1.turn) {
+            sender.setTitle(player1.symbol, for: .normal)
+            currentTurn = !player1.turn
+            return player2.symbol
+        } else {
+            sender.setTitle(player2.symbol, for: .normal)
+            currentTurn = !player2.turn
+            return player1.symbol
+        }
+    }
+    
 }

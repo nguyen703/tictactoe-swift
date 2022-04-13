@@ -40,7 +40,9 @@ class ViewController: UIViewController {
     }
 
     @IBAction func boardTapAction(_ sender: UIButton) {
-        addToBoard(sender)
+        if (sender.title(for: .normal) == nil) {
+            turnLabel.text = board.addToBoard(sender, player1, player2)
+        }
         
         if checkForVictory(player1.symbol) {
             player1.score += 1
@@ -60,22 +62,6 @@ class ViewController: UIViewController {
     }
     
 //MARK: - Functions area
-    
-    // Add symbol on the board
-    // triggered when tapping
-    func addToBoard(_ sender: UIButton) {
-        if (sender.title(for: .normal) == nil) {
-            if (board.currentTurn == player1.turn) {
-                sender.setTitle(player1.symbol, for: .normal)
-                board.currentTurn = !player1.turn
-                turnLabel.text = player2.symbol
-            } else if (board.currentTurn == player2.turn) {
-                sender.setTitle(player2.symbol, for: .normal)
-                board.currentTurn = !player2.turn
-                turnLabel.text = player1.symbol
-            }
-        }
-    }
     
     // show alert when game finished
     func resultAlert(title: String) {
