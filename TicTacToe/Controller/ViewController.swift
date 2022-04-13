@@ -38,7 +38,19 @@ class ViewController: UIViewController {
         // parse all the buttons to the board array
         board.createBoard(boardCells)
     }
+    
+    override var shouldAutorotate: Bool {
+        return false
+    }
 
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.portrait
+    }
+
+    override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
+        return UIInterfaceOrientation.portrait
+    }
+    
     @IBAction func boardTapAction(_ sender: UIButton) {
         if (sender.title(for: .normal) == nil) {
             turnLabel.text = board.addToBoard(sender, player1, player2)
