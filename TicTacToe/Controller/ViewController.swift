@@ -37,6 +37,9 @@ class ViewController: UIViewController {
         
         // parse all the buttons to the board array
         board.createBoard(boardCells)
+        
+        // call this function to disable multi touch at once
+        board.disableMultiTouch()
     }
     
     override var shouldAutorotate: Bool {

@@ -51,4 +51,10 @@ struct Board {
         }
     }
     
+    mutating func disableMultiTouch() {
+        for button in allCells {
+            button.isExclusiveTouch = true
+        }
+    }
+    
 }
