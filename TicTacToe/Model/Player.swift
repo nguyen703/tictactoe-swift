@@ -11,4 +11,9 @@ struct Player {
     var score = 0
     var symbol: String
     var turn: Bool
+    
+    mutating func addScore() {
+        score += 1
+    }
+    
 }

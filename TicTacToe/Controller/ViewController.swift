@@ -60,13 +60,13 @@ class ViewController: UIViewController {
         }
         
         if checkForVictory(player1.symbol) {
-            player1.score += 1
+            player1.addScore()
             resultAlert(title: "\(player1.symbol) Win!")
             turnLabel.text = player2.symbol
         }
         
         if checkForVictory(player2.symbol) {
-            player2.score += 1
+            player2.addScore()
             resultAlert(title: "\(player2.symbol) Win!")
             turnLabel.text = player1.symbol
         }
